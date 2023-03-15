@@ -58,5 +58,5 @@ With Godunov scheme, it performs similarly to the first order upwind scheme.
 
 Using second order improves the dissipation. 
 
-
+However, some slight oscillations are generated. So, we should go for a higher order scheme + Godunov. 
 

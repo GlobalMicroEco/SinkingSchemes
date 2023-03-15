@@ -4,3 +4,9 @@
 *.ptx
 *.cubin
 *.fatbin
+.idea/*.*
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/SinkingSchemes.iml
+.idea/vcs.xml

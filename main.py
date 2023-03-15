@@ -83,13 +83,6 @@ if __name__ == '__main__':
     x = np.linspace(0, 1, 100)
     u_ini = np.sin(x * 2 * np.pi)
 
-    # fig1, ax2 = plt.subplots()
-    # ax2.plot(x, u_ini)
-    # plt.show()
-
-    bs = burger_solver()
-    bs.dudt_central(x, u_ini)
-
     sol1 = solve_ivp(bs.dudt_firstorder_upwind, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
 
     c1 = 'red'  # blue
