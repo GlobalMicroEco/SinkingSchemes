@@ -388,6 +388,15 @@ difference in the schemes</p>
 \]</span></p>
 <p>where <span class="math inline">\(u\)</span> is the concentration of
 the tracer and the sinking rate is related to the concentration.</p>
+<p>The concentration along x axis is initialized as a since shape. As
+such, at the middle place, there is a shock wave generated due to the
+rightward moving wave colliding with the leftward moving wave. The
+performance of schemes differ significantly right here due to large
+curve gradients that ruin the smootheness of the curve.</p>
+</div>
+<div id="the-central-difference-scheme" class="section level1">
+<h1>The central difference scheme</h1>
+<p><code>{r, fig.width = 4} # Bigger fig.width include_graphics(Central_difference)</code></p>
 </div>
 
 

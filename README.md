@@ -1,11 +1,6 @@
----
-title: "Several numerical schemes for interpolation of the sinking term in the oceanic models"
-author: 
-  - name: "Liang Xu"
-    url: https://github.com/jjallaire
-    affiliation: Global Micro Eco Group
-    affiliation_url: https://carnegiescience.edu/dr-emily-zakem
----
+# Several numerical schemes for interpolation of the sinking term in the oceanic models"
+## Liang Xu
+
 
 # The list of the schemes implemented here
 
@@ -41,4 +36,5 @@ The concentration along x axis is initialized as a since shape. As such, at the 
 
 # The central difference scheme
 
+![Alt text](Central_difference.png)
 
