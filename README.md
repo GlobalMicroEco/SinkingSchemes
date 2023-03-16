@@ -43,11 +43,25 @@ where $f(u)=\frac{u^2}{2}$. This function can be customized to any function as y
 
 The concentration along x-axis is initialized as a Sinc shape. As such, at the middle place, there is a shock wave generated due to the rightward moving wave colliding with the leftward moving wave. The performance of schemes differ significantly right here due to large curve gradients that ruin the smoothness of the curve.
 
+# The integration over space
+
+The schemes implemented here are used to approximate the integration over space, i.e. the second term of the equation
+
+$$
+\frac{\partial f(u)}{\partial x}
+$$
+
+as it involves complex dynamics.
+
+The integration over time can be done via ODE45/Rounge-Kutta methods directly.
+
 # The initial condition
 
 The value of $u$ is initialized as a Sinc curve with both positives and negatives. Thus, the Burgers equation shows that the wave is moving rightward when $u>0$ and leftward when $u<0$. This is to illustrate the collision of the waves that produces the shock wave, i.e. the sharp slope at the collision point where normally low-order schemes easily failed.
 
 The color of the waves indicates the time progress. The far left wave in fresh red is the initial shape. With the darkening color, the wave proceeds as the equation models. The black curve indicates the final time step of the wave. 
+
+The expected wave moving should be something like Fig. 5, a right Sinc-shape curve collapses to a Z shape due to physical dissipation. The amplitude of the curves should not decrease until moving to the shock point.  
 
 # The central difference scheme
 
