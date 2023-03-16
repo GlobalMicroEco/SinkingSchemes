@@ -1,6 +1,5 @@
-# Several numerical schemes for interpolation of the sinking term in the oceanic models"
+# Several numerical schemes for interpolation of the sinking term in the oceanic models
 ## Liang Xu
-
 
 # The list of the schemes implemented here
 
@@ -42,11 +41,11 @@ $$
 
 where $f(u)=\frac{u^2}{2}$. This function can be customized to any function as you wish. For example, $f(u)=cu$ where c is the constant sinking rate.
 
-The concentration along x axis is initialized as a Since shape. As such, at the middle place, there is a shock wave generated due to the rightward moving wave colliding with the leftward moving wave. The performance of schemes differ significantly right here due to large curve gradients that ruin the smoothness of the curve.
+The concentration along x-axis is initialized as a Sinc shape. As such, at the middle place, there is a shock wave generated due to the rightward moving wave colliding with the leftward moving wave. The performance of schemes differ significantly right here due to large curve gradients that ruin the smoothness of the curve.
 
 # The initial condition
 
-The value of $u$ is initialized as a Since curve with both positives and negatives. Thus, the Burgers equation shows that the wave is moving rightward when $u>0$ and leftward when $u<0$. This is to illustrate the collision of the waves that produces the shock wave, i.e. the sharp slope at the collision point where normally low-order schemes easily failed.
+The value of $u$ is initialized as a Sinc curve with both positives and negatives. Thus, the Burgers equation shows that the wave is moving rightward when $u>0$ and leftward when $u<0$. This is to illustrate the collision of the waves that produces the shock wave, i.e. the sharp slope at the collision point where normally low-order schemes easily failed.
 
 The color of the waves indicates the time progress. The far left wave in fresh red is the initial shape. With the darkening color, the wave proceeds as the equation models. The black curve indicates the final time step of the wave. 
 
