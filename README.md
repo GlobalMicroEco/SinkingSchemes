@@ -60,3 +60,10 @@ Using second order improves the dissipation.
 
 However, some slight oscillations are generated. So, we should go for a higher order scheme + Godunov. 
 
+The second order upwind Godunov scheme with Van Leer limitor
+
+![Alt text](Second_order_upwind_Godunov_vllimitor.png)
+
+This scheme with the Van Leer limitor has largely improved the dissipation and removed the oscillations.
+
+A higher order scheme + Godunov + limitor should improve further.
