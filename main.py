@@ -46,7 +46,8 @@ class burger_solver():
         du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
         return du_bar_dt
 
-    # Second order Godunov scheme.
+    # Second order upwind Godunov scheme.
+
     def dudt_Godunov_upwind(self, tt, u_bar):
         dx = 1 / len(u_bar)
         f_bar = np.power(u_bar, 2) / 2
@@ -71,6 +72,44 @@ class burger_solver():
         du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
         return du_bar_dt
 
+
+    # Second order Godunov scheme with Van Leer limitor.
+    def dudt_Godunov_vllimitor(self, tt, u_bar):
+        dx = 1 / len(u_bar)
+        f_bar = np.power(u_bar, 2) / 2
+        f_extro_bar = np.insert(f_bar, 0, 0)
+        f_extro_bar = np.insert(f_extro_bar, len(f_extro_bar), 0)
+
+        f_extro_left = np.zeros(len(u_bar)-1)
+        f_extro_right = np.zeros(len(u_bar)-1)
+
+        for ii in range(len(u_bar) - 1):
+            r_left = (f_extro_bar[ii+2] - f_extro_bar[ii+1]) / (f_extro_bar[ii+1] - f_extro_bar[ii]) if f_extro_bar[ii+1] != f_extro_bar[ii] else 0
+            r_right = (f_extro_bar[ii+1] - f_extro_bar[ii+2]) / (f_extro_bar[ii+2] - f_extro_bar[ii+3]) if f_extro_bar[ii+2] != f_extro_bar[ii+1] else 0
+
+            f_extro_left[ii] = f_extro_bar[ii+1] + (f_extro_bar[ii+1] - f_extro_bar[ii]) / 2 * self.vllimitor(r_left)
+            f_extro_right[ii] = f_extro_bar[ii + 2] - (f_extro_bar[ii + 3] - f_extro_bar[ii+2]) / 2 * self.vllimitor(r_right)
+
+        f_interface_max = np.maximum(f_extro_left, f_extro_right)
+        f_interface_min = np.minimum(f_extro_left, f_extro_right)
+        f_interface_min[np.where(np.logical_and(u_bar[1:] > 0, u_bar[:-1] < 0))  ] = 0
+        f_interface = f_interface_max * (u_bar[:-1] > u_bar[1:]) + f_interface_min * (u_bar[:-1] <= u_bar[1:])
+
+        f_interface = np.insert(f_interface, 0, 0)
+        f_interface = np.insert(f_interface, len(f_interface), 0)
+
+        du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
+        return du_bar_dt
+
+    def vllimitor(self, r):
+        if r == -1:
+            phi = 0
+        else:
+            phi = 2*r / (1+r) if r>0 else 0
+        return phi
+
+
+
     # Color gradient
     def colorFader(self, c1, c2, mix=0):  # fade (linear interpolate) from color c1 (at mix=0) to c2 (mix=1)
         c1 = np.array(mpl.colors.to_rgb(c1))
@@ -83,20 +122,27 @@ if __name__ == '__main__':
     x = np.linspace(0, 1, 100)
     u_ini = np.sin(x * 2 * np.pi)
 
-    sol1 = solve_ivp(bs.dudt_firstorder_upwind, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
+    # fig1, ax2 = plt.subplots()
+    # ax2.plot(x, u_ini)
+    # plt.show()
+
+    bs = burger_solver()
+    bs.dudt_central(x, u_ini)
+
+    sol1 = solve_ivp(bs.dudt_Godunov_vllimitor, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
 
     c1 = 'red'  # blue
     c2 = 'black'  # green
     n = sol1.y.shape[1]
 
     # plot
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6), dpi=80)
     for nrow in range(sol1.y.shape[1]):
         ax.plot(x, sol1.y[:, nrow], linewidth=2.0, color=bs.colorFader(c1,c2,nrow/n))
 
     # ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
     #        ylim=(-1, 1), yticks=np.arange(-1, 1))
-
-    plt.show()
+    plt.title('The second order upwind Godunov with the Van Leer limitor')
+    plt.savefig("Second_order_upwind_Godunov_vllimitor.png", bbox_inches='tight')
 
 
