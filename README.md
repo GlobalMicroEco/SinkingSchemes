@@ -4,15 +4,15 @@
 
 # The list of the schemes implemented here
 
-1. The central difference scheme;
+**1. The central difference scheme**;
 
-2. The first order upwind scheme;
+**2. The first order upwind scheme**;
 
-3. The first order upwind Godunov scheme;
+**3. The first order upwind Godunov scheme**;
 
-4. The second order upwind Godunov scheme;
+**4. The second order upwind Godunov scheme**;
 
-5. The second order upwind Godunov scheme with Van Leer limitor.
+**5. The second order upwind Godunov scheme with Van Leer limitor**.
 
 Schemes to be implemented:
 
