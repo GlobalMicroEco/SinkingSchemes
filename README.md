@@ -12,6 +12,8 @@
 
 4. The second order upwind Godunov scheme;
 
+5. The second order upwind Godunov scheme with Van Leer limitor.
+
 Schemes to be implemented:
 
 1. The third order (quadratic) upwind scheme (QUICK);
