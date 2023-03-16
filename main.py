@@ -8,24 +8,27 @@ plt.style.use('_mpl-gallery')
 
 
 class burger_solver():
+    # Customize the f function that will be used in the second term of the equation.
+    def __init__(self, ffunc):
+        self.ffunc = ffunc
+
     # Central difference scheme
     def dudt_central(self, tt, u_bar):
         dx = 1/len(u_bar)
-        f_bar = np.power(u_bar, 2)  / 2
+        f_bar = self.ffunc(u_bar)
         f_interface = (f_bar[1:] + f_bar[:-1]) / 2
-        f_interface = np.insert(f_interface, 0 , 0)
+        f_interface = np.insert(f_interface, 0, 0)
         f_interface = np.insert(f_interface, len(f_interface), 0)
-
         du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
         return du_bar_dt
 
     # First order upwind scheme
     def dudt_firstorder_upwind(self, tt, u_bar):
         dx = 1/len(u_bar)
-        f_bar = np.power(u_bar, 2)  / 2
+        f_bar = self.ffunc(u_bar)
         slope_interface = (u_bar[1:] + u_bar[:-1]) / 2
         f_interface = f_bar[:-1] * (slope_interface > 0) +f_bar[1:] * (slope_interface <= 0)
-        f_interface = np.insert(f_interface, 0 , 0)
+        f_interface = np.insert(f_interface, 0, 0)
         f_interface = np.insert(f_interface, len(f_interface), 0)
         du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
         return du_bar_dt
@@ -34,7 +37,7 @@ class burger_solver():
     # First order Godunov scheme + central difference, taking the average volumn as the left and right flux value.
     def dudt_Godunov_firstorder(self, tt, u_bar):
         dx = 1 / len(u_bar)
-        f_bar = np.power(u_bar, 2) / 2
+        f_bar = self.ffunc(u_bar)
         f_interface_max = np.maximum(f_bar[1:], f_bar[:-1])
         f_interface_min = np.minimum(f_bar[1:], f_bar[:-1])
         f_interface_min[np.where(np.logical_and(u_bar[1:] > 0, u_bar[:-1] < 0))  ] = 0
@@ -50,7 +53,7 @@ class burger_solver():
 
     def dudt_Godunov_upwind(self, tt, u_bar):
         dx = 1 / len(u_bar)
-        f_bar = np.power(u_bar, 2) / 2
+        f_bar = self.ffunc(u_bar)
         f_extro_bar = np.insert(f_bar, 0, 0)
         f_extro_bar = np.insert(f_extro_bar, len(f_extro_bar), 0)
 
@@ -76,7 +79,7 @@ class burger_solver():
     # Second order Godunov scheme with Van Leer limitor.
     def dudt_Godunov_vllimitor(self, tt, u_bar):
         dx = 1 / len(u_bar)
-        f_bar = np.power(u_bar, 2) / 2
+        f_bar = self.ffunc(u_bar)
         f_extro_bar = np.insert(f_bar, 0, 0)
         f_extro_bar = np.insert(f_extro_bar, len(f_extro_bar), 0)
 
@@ -119,18 +122,24 @@ class burger_solver():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    # The space grid (x axis)
     x = np.linspace(0, 1, 100)
+    # The initial concentration of u
     u_ini = np.sin(x * 2 * np.pi)
 
+    # Define the f function
+    def ffunc(u_bar):
+        return np.power(u_bar, 2)/2
     # fig1, ax2 = plt.subplots()
     # ax2.plot(x, u_ini)
     # plt.show()
 
-    bs = burger_solver()
-    bs.dudt_central(x, u_ini)
+    # Initialize the solver
+    bs = burger_solver(ffunc)
+    # Use ODE45 to integrate over time while the solver have dealt with the integration over space
+    sol1 = solve_ivp(bs.dudt_central, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
 
-    sol1 = solve_ivp(bs.dudt_Godunov_vllimitor, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
-
+    # Color platte
     c1 = 'red'  # blue
     c2 = 'black'  # green
     n = sol1.y.shape[1]
@@ -143,6 +152,6 @@ if __name__ == '__main__':
     # ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
     #        ylim=(-1, 1), yticks=np.arange(-1, 1))
     plt.title('The second order upwind Godunov with the Van Leer limitor')
-    plt.savefig("Second_order_upwind_Godunov_vllimitor.png", bbox_inches='tight')
+    # plt.savefig("Second_order_upwind_Godunov_vllimitor.png", bbox_inches='tight')
 
 
