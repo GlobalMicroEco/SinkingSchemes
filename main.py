@@ -26,13 +26,42 @@ class burger_solver():
     def dudt_firstorder_upwind(self, tt, u_bar):
         dx = 1/len(u_bar)
         f_bar = self.ffunc(u_bar)
-        slope_interface = (u_bar[1:] + u_bar[:-1]) / 2
+        slope_interface = np.zeros(len(u_bar)-1)
+        for ii in range(len(u_bar)-1):
+            if u_bar[ii+1] != u_bar[ii]:
+                slope_interface[ii] = (self.ffunc(u_bar[ii+1]) - self.ffunc(u_bar[ii])) / (u_bar[ii+1] - u_bar[ii])
+            else:
+                slope_interface[ii] = 0
+
         f_interface = f_bar[:-1] * (slope_interface > 0) +f_bar[1:] * (slope_interface <= 0)
         f_interface = np.insert(f_interface, 0, 0)
         f_interface = np.insert(f_interface, len(f_interface), 0)
         du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
         return du_bar_dt
 
+    # Third order upwind scheme or Quadratic Upstream Interpolation for Convective Kinematics (QUICK) scheme
+    def dudt_QUICK(self, tt, u_bar):
+        dx = 1/len(u_bar)
+        f_bar = self.ffunc(u_bar)
+        slope_interface = np.zeros(len(u_bar) - 1)
+        f_interface = np.zeros(len(u_bar) - 1)
+        f_bar_ext = np.zeros(len(u_bar) + 2)
+        f_bar_ext[1:-1] = f_bar
+        for ii in range(len(u_bar) - 1):
+            if u_bar[ii + 1] != u_bar[ii]:
+                slope_interface[ii] = (self.ffunc(u_bar[ii + 1]) - self.ffunc(u_bar[ii])) / (u_bar[ii + 1] - u_bar[ii])
+            else:
+                slope_interface[ii] = 0
+
+            if slope_interface[ii] > 0:
+                f_interface[ii] = -1/8 * f_bar_ext[ii] + 6/8 * f_bar_ext[ii+1] + 3/8 * f_bar_ext[ii+2]
+            else:
+                f_interface[ii] = -1/8 * f_bar_ext[ii+3] + 6/8 * f_bar_ext[ii+2] + 3/8 * f_bar_ext[ii+1]
+
+        f_interface = np.insert(f_interface, 0, 0)
+        f_interface = np.insert(f_interface, len(f_interface), 0)
+        du_bar_dt = (f_interface[:-1] - f_interface[1:]) / dx
+        return du_bar_dt
 
     # First order Godunov scheme + central difference, taking the average volumn as the left and right flux value.
     def dudt_Godunov_firstorder(self, tt, u_bar):
@@ -137,7 +166,7 @@ if __name__ == '__main__':
     # Initialize the solver
     bs = burger_solver(ffunc)
     # Use ODE45 to integrate over time while the solver have dealt with the integration over space
-    sol1 = solve_ivp(bs.dudt_central, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
+    sol1 = solve_ivp(bs.dudt_QUICK, [0,1], u_ini, t_eval = [i/100 for i in range(100)])
 
     # Color platte
     c1 = 'red'  # blue
@@ -149,9 +178,9 @@ if __name__ == '__main__':
     for nrow in range(sol1.y.shape[1]):
         ax.plot(x, sol1.y[:, nrow], linewidth=2.0, color=bs.colorFader(c1,c2,nrow/n))
 
-    # ax.set(xlim=(0, 8), xticks=np.arange(1, 8),
+    # ax.set(xlim=(0, 1), xticks=np.arange(0, 1),
     #        ylim=(-1, 1), yticks=np.arange(-1, 1))
-    plt.title('The second order upwind Godunov with the Van Leer limitor')
-    # plt.savefig("Second_order_upwind_Godunov_vllimitor.png", bbox_inches='tight')
+    plt.title('The third order upwind scheme (QUICK)')
+    # plt.savefig("QUICK.png", bbox_inches='tight')
 
 

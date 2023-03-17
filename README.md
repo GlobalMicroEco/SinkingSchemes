@@ -11,15 +11,15 @@
 
 **4. The second order upwind Godunov scheme**;
 
-**5. The second order upwind Godunov scheme with Van Leer limiter**.
+**5. The second order upwind Godunov scheme with Van Leer limiter**;
+
+**6. The third order (quadratic) upwind scheme (QUICK)**;
 
 Schemes to be implemented:
 
-1. The third order (quadratic) upwind scheme (QUICK);
+1. The third order (quadratic) upwind Godunov scheme;
 
-2. The third order (quadratic) upwind Godunov scheme;
-
-3. The piecewise parabolic methods (PPM) scheme;
+2. The piecewise parabolic methods (PPM) scheme;
 
 etc.
 
@@ -65,11 +65,15 @@ The expected wave moving should be something like Fig. 5, a right Sinc-shape cur
 
 # The central difference scheme
 
+**Fig. 1**
+
 ![Alt text](Central_difference.png)
 
 The oscillations are generated due to low accuracy of the scheme at the shock wave. 
 
 # The first order upwind scheme
+
+**Fig. 2**
 
 ![Alt text](First_order_upwind.png)
 
@@ -77,11 +81,15 @@ The oscillations have been improved because the upwind scheme takes the informat
 
 # The first order upwind Godunov scheme;
 
+**Fig. 3**
+
 ![Alt text](First_order_upwind_Godunov.png)
 
 With Godunov scheme, it performs similarly to the first order upwind scheme.
 
 # The second order upwind Godunov scheme
+
+**Fig. 4**
 
 ![Alt text](Second_order_upwind_Godunov.png)
 
@@ -89,10 +97,23 @@ Using second order improves the dissipation.
 
 However, some slight oscillations are generated. So, we should go for a higher order scheme + Godunov. 
 
-The second order upwind Godunov scheme with Van Leer limiter
+# The second order upwind Godunov scheme with Van Leer limiter
+
+**Fig. 5**
 
 ![Alt text](Second_order_upwind_Godunov_vllimitor.png)
 
 This scheme with the Van Leer limiter has largely improved the dissipation and removed the oscillations.
+
+
+# QUICK scheme
+
+**Fig. 6**
+
+![Alt text](QUICK.png)
+
+This scheme with the third order accuracy performs well even without implementing Godunov and the limiter!
+
+
 
 A higher order scheme + Godunov + limiter should improve further.
